@@ -7,7 +7,7 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 //Morgan Middleware
-app.use(morgan('dev')); // Output look like :- GET /api/v1/tours 200 263.782 ms - 8642
+app.use(morgan('dev')); // Output look like this :- GET /api/v1/tours 200 263.782 ms - 8642
 
 //MidleWare
 //to get access of body parameter in response
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     next();
 });
 
-//this two are middleware , Mount Our Router
+//this two are middleware , Mount Our Router // if we get Router like '/api/v1/tours' then go to this @tourRouter Function
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
