@@ -110,6 +110,38 @@ const deleteTour = (req, res) => {
     });
 };
 
+//USER API
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not yet Define'
+    });
+};
+
+const createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not yet Define'
+    });
+};
+const getUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not yet Define'
+    });
+};
+const updateUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not yet Define'
+    });
+};
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not yet Define'
+    });
+};
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v1/tours/:id', getTour);
 // app.post('/api/v1/tours', createTour);
@@ -117,6 +149,8 @@ const deleteTour = (req, res) => {
 // app.delete('/api/v1/tours/:id', deleteTour);
 
 //ROUTES
+
+//1) Tours
 app
     .route('/api/v1/tours')
     .get(getAllTours)
@@ -127,6 +161,17 @@ app
     .get(getTour)
     .patch(updateTour)
     .delete(deleteTour);
+
+//2) User
+app
+    .route('/api/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
+app
+    .route('/api/v1/users/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 // SERVER START
 const port = 9033;
