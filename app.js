@@ -7,7 +7,10 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 //Morgan Middleware
-app.use(morgan('dev')); // Output look like this :- GET /api/v1/tours 200 263.782 ms - 8642
+console.log(process.env.NODE_ENV);
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev')); // Output look like this :- GET /api/v1/tours 200 263.782 ms - 8642
+}
 
 //MidleWare
 //to get access of body parameter in response
