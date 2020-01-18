@@ -1,0 +1,22 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Learning Node + mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/savanipoojan78/Natours.git"
+  },
+  "author": "Poojan Savani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/savanipoojan78/Natours/issues"
+  },
+  "homepage": "https://github.com/savanipoojan78/Natours#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
