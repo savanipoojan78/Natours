@@ -15,6 +15,16 @@ exports.checkID = (req, res, next, val) => {
     next();
 };
 
+exports.checkBody = (req, res, next) => {
+    if (!req.body.name || !req.body.price) {
+        return res.status(400).json({
+            status: 'Failed',
+            message: 'Missing name and Price'
+        });
+    }
+    next();
+};
+
 exports.getAllTours = (req, res) => {
     console.log(req.requestTime);
     res.status(200).json({
@@ -64,7 +74,7 @@ exports.createTour = (req, res) => {
     console.log(newTour);
 
     fs.writeFile(
-        `${__dirname}/dev-data/data/tours-simple.json`,
+        `${__dirname}/../dev-data/data/tours-simple.json`,
         JSON.stringify(tours),
         err => {
             res.status(201).json({

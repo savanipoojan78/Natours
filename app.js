@@ -13,6 +13,8 @@ app.use(morgan('dev')); // Output look like this :- GET /api/v1/tours 200 263.78
 //to get access of body parameter in response
 app.use(express.json());
 
+app.use(express.static(`${__dirname}/public`));
+
 //Create Our Own MiddleWare
 app.use((req, res, next) => {
     console.log('Hello from the Middleware');

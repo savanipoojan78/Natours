@@ -139,5 +139,13 @@
         "duration": 5,
         "maxGroupSize": 25,
         "difficulty": "easy"
+    },
+    {
+        "id": 10,
+        "name": "The Forest Hiker",
+        "duration": 5,
+        "maxGroupSize": 25,
+        "difficulty": "easy",
+        "price": 200
     }
 ]

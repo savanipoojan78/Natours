@@ -8,7 +8,7 @@ router.param('id', tourController.checkID);
 router
     .route('/')
     .get(tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
-    .post(tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
+    .post(tourController.checkBody, tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
 
 router
     .route('/:id')
