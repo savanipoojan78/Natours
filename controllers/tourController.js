@@ -1,5 +1,11 @@
 const Tour = require('../models/tourModel');
 
+exports.aliasTopTours = async(req, res, next) => {
+    req.query.limit = '5';
+    req.query.sort = '-ratingsAverage,price';
+    req.query.fields = 'name,price,ratingAverage,difficulty';
+    next();
+};
 exports.getAllTours = async(req, res) => {
     try {
         // const query = await Tour.find()
@@ -14,7 +20,6 @@ exports.getAllTours = async(req, res) => {
         const queryObj = {...req.query };
         const excludeFields = ['page', 'sort', 'limit', 'fields'];
         excludeFields.forEach(el => delete queryObj[el]);
-
 
         //1B) Advance Filtering
 
