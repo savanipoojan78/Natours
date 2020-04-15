@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 // SCHEMA
 const tourSchema = new mongoose.Schema({
@@ -8,6 +9,7 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    slug: {type:String},
     duration: {
         type: Number,
         required: [true, 'A tour must have a duration']
@@ -61,6 +63,18 @@ const tourSchema = new mongoose.Schema({
 tourSchema.virtual('tourWeekend').get(function(){
     return this.duration/7;
 });
+
+// DOC Middalware in mongoose this middlware called before .save() .create methode but in inserMany in didn't call this middlware.
+tourSchema.pre('save', function(next){
+this.slug = slugify(this.name,{lowercase:true});
+next();
+});
+
+// tourSchema.post('save',function(doc,next){
+//     console.log('post middware');
+//     next();
+// })
+
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
