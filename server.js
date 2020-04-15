@@ -11,11 +11,13 @@ app.listen(port, () => {
     console.log(`App running on port ${port}`);
 });
 
-const DB = process.env.DATABASE.replace(
-    '<PASSWORD>',
-    process.env.DATABASE_PASSWORD
-);
+//*Prod Database Connection //*
+// const DB = process.env.DATABASE.replace(
+//     '<PASSWORD>',
+//     process.env.DATABASE_PASSWORD
+// );
 
+const DB=process.env.DATABASE_LOCAL;
 mongoose
     .connect(DB, {
         useNewUrlParser: true,
