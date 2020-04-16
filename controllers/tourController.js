@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFetures');
 const catchAsync =require('../utils/catchAsync');
+const AppError=require('./../utils/appError');
 
 exports.aliasTopTours = async(req, res, next) => {
     req.query.limit = '5';
@@ -32,9 +33,13 @@ exports.getAllTours = catchAsync(async(req, res,next) => {
         });
 });
 
-exports.getTour = catchAsync(async(req, res) => {
+exports.getTour = catchAsync(async(req, res,next) => {
     
-        const tour = await Tour.findById(req.params.id);
+        const query = Tour.findById(req.params.id);
+        const tour =await query.select('-__v');
+        if(!tour){
+            return next(new AppError('Can not find this Tour With Given Id',404))
+        }
         res.status(200).json({
             status: 'success',
             data: {
@@ -43,12 +48,15 @@ exports.getTour = catchAsync(async(req, res) => {
         });
 });
 
-exports.updateTour = catchAsync(async(req, res) => {
+exports.updateTour = catchAsync(async(req, res,next) => {
     
         const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
+        if(!tour){
+            return next('can not find this Tour With Given Id',404)
+        }
         res.status(200).json({
             status: 'Success',
             data: {
@@ -57,7 +65,7 @@ exports.updateTour = catchAsync(async(req, res) => {
         });
 });
 
-exports.createTour = catchAsync(async(req, res) => {
+exports.createTour = catchAsync(async(req, res,next) => {
     
         const newTour = await Tour.create(req.body);
 
@@ -70,15 +78,18 @@ exports.createTour = catchAsync(async(req, res) => {
    
 });
 
-exports.deleteTour = catchAsync( async(req, res) => {
-        await Tour.findByIdAndDelete(req.params.id);
+exports.deleteTour = catchAsync( async(req, res,next) => {
+        const tour=await Tour.findByIdAndDelete(req.params.id);
+        if(!tour){
+            return next('can not find this Tour With Given Id',404)
+        }
         res.status(204).json({
             status: 'Success',
             data: null
         });
 });
 
-exports.getTourStats =  catchAsync(async(req, res) => {
+exports.getTourStats =  catchAsync(async(req, res,next) => {
     
         const stats = await Tour.aggregate([{
                 $match: { ratingsAverage: { $gte: 4.5 } }
@@ -110,7 +121,7 @@ exports.getTourStats =  catchAsync(async(req, res) => {
     
 });
 
-exports.getMonthlyPlan= catchAsync(async(req, res) => {
+exports.getMonthlyPlan= catchAsync(async(req, res,next) => {
         const year=req.params.year*1;
         const plan = await Tour.aggregate([
             {
