@@ -27,14 +27,21 @@ const handleCastErrorDB = err =>{
     const message= `Invalid ${err.path}:${err.value}`
     return new AppError(message,400)
 }
+const handleDuplicateErrorDB = err=>{
+    const message= `This Tour is ${err.keyValue.name} already there, Please Change the Name`;
+    return new AppError(message,400);
+}
 module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
-        developmentError(err,res)
+        developmentError(error,res)
     }
     else if(process.env.NODE_ENV==='production'){
-         if(err.name='CastError'){
+         if(err.name==='CastError'){
              error=handleCastErrorDB(err)
+         }
+         if(error.code===11000){
+            error=handleDuplicateErrorDB(err)
          }
         ProdError(error,res)
     }
