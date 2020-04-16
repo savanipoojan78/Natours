@@ -28,7 +28,7 @@ const handleCastErrorDB = err =>{
     return new AppError(message,400)
 }
 const handleDuplicateErrorDB = err=>{
-    const message= `This Tour is ${err.keyValue.name} already there, Please Change the Name`;
+    const message= `This ${Object.keys(err.keyValue)} is ${err.keyValue[Object.keys(err.keyValue)]} already there, Please Change it`;
     return new AppError(message,400);
 }
 const handleValidationErrorDB= err=>{
