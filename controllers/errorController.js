@@ -17,7 +17,7 @@ const ProdError=(err,res)=>{
     })
     }
     else{
-        res.send(500).json({
+        res.status(500).json({
             status:'failed',
             message:'Something Went Wrong'
         })
@@ -31,18 +31,24 @@ const handleDuplicateErrorDB = err=>{
     const message= `This Tour is ${err.keyValue.name} already there, Please Change the Name`;
     return new AppError(message,400);
 }
+const handleValidationErrorDB= err=>{
+    const data=Object.values(err.errors).map(el=>el.message)
+    const message=`Invalid data input ${data.join('. ')}`;
+    return new AppError(message,400);
+}
 module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
         developmentError(error,res)
     }
     else if(process.env.NODE_ENV==='production'){
-         if(err.name==='CastError'){
+         if(error.name==='CastError'){
              error=handleCastErrorDB(err)
          }
-         if(error.code===11000){
+         else if(error.code===11000){
             error=handleDuplicateErrorDB(err)
          }
+         else if(error.name==='ValidationError') error= handleValidationErrorDB(err)
         ProdError(error,res)
     }
 }
