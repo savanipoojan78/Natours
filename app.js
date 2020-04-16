@@ -1,8 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const AppError=require('./utils/appError')
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const globalErrorController=require('./controllers/errorController')
 
 const app = express();
 
@@ -28,11 +29,9 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*',(req,res,next)=>{
-    res.status(400).json({
-        status:'failed',
-        message:`route ${req.originalUrl} is not defined`
-    })
-    next();
+    next(new AppError(`route ${req.originalUrl} is not defined`,400))
 });
+
+app.use(globalErrorController)
 
 module.exports = app;
