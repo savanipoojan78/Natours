@@ -7,7 +7,7 @@ const app = require('./app');
 
 // SERVER START
 const port = 9033 || process.env.PORT;
-app.listen(port, () => {
+const server=app.listen(port, () => {
     console.log(`App running on port ${port}`);
 });
 
@@ -27,3 +27,11 @@ mongoose
     .then(() => {
         console.log('DB connection Successfull');
     });
+
+process.on('unhandledRejection',err=>{
+    console.log(err.name,err.message);
+    console.log('UNHANDLE rejection Shutting DOWN');
+    server.close(()=>{
+        process.exit(1);
+    })
+})
