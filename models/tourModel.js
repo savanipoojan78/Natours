@@ -54,7 +54,11 @@ const tourSchema = new mongoose.Schema({
         default: Date.now(),
         select: false
     },
-    startDates: [Date]
+    startDates: [Date],
+    isPublish : {
+        type:Boolean,
+        deafult:true,
+    }
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
@@ -75,6 +79,12 @@ next();
 //     next();
 // })
 
+//QUERY Middleware
+
+tourSchema.pre(/^find/,function(next){
+    this.find({isPublish:{$ne:false}});
+    next();
+})
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
