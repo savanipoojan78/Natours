@@ -1,28 +1,30 @@
 const {promisify}=require('util')
 const jwt=require('jsonwebtoken')
 const crypto=require('crypto')
-
 const User=require('./../models/userModel');
 const catchAsync=require('./../utils/catchAsync');
 const AppError=require('./../utils/appError')
 const sendEmail=require('./../utils/email')
 
 const signInToken=(id)=>{
-    console.log(id)
     return jwt.sign({id},process.env.JWT_SECRECT,{
         expiresIn:process.env.JWT_EXPIRE_IN
     })
 }
-exports.signup=catchAsync(async (req,res)=>{
-    const newUser=await User.create(req.body);
-    const token=signInToken(newUser._id)
+
+const createAndSendToken=(user,statusCode,res)=>{
+    const token=signInToken(user._id)
     res.status(201).json({
         status:'success',
         token,
         data:{
-            user:newUser
+            user:user
         }
     })
+}
+exports.signup=catchAsync(async (req,res)=>{
+    const newUser=await User.create(req.body);
+    createAndSendToken(newUser,200,res)
 });
 exports.login= catchAsync(async(req,res,next)=>{
     const {email,password}=req.body
@@ -33,11 +35,7 @@ exports.login= catchAsync(async(req,res,next)=>{
      if(!user || !await user.correctPassword(password,user.password)){
          return next(new AppError("Please entered correct email & password",401));
      }
-     const token=signInToken(user._id);
-     res.status(200).json({
-         status:'success',
-         token
-     })
+     createAndSendToken(user,200,res)
 });
 
 exports.protect=catchAsync(async(req,res,next)=>{
@@ -106,7 +104,7 @@ exports.forgetPassword= catchAsync(async(req,res,next)=>{
         user.passwordResetToken=undefined;
         user.passwordResetTokenExpire=undefined;
         await user.save({validateBeforeSave:false})
-        next(new AppError('failed to send the message',500));
+        next(new AppError('failed to send the Email',500));
     }
     
 
@@ -115,7 +113,6 @@ exports.forgetPassword= catchAsync(async(req,res,next)=>{
 
 exports.resetPassword=catchAsync(async(req,res,next)=>{
     const encryptPasswordResetToken=crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
-    console.log('hello')
     const user=await User.findOne( {passwordResetToken:encryptPasswordResetToken,
         passwordResetTokenExpire:{$gt:Date.now()}}
     )
@@ -128,9 +125,16 @@ exports.resetPassword=catchAsync(async(req,res,next)=>{
     user.passwordResetToken=undefined;
     user.passwordResetTokenExpire=undefined;
     await user.save();
-    const token=signInToken(user._id);
-    res.status(200).json({
-        status:'success',
-        token
-    })
-})
+    createAndSendToken(user,200,res)
+});
+
+exports.updatePassword=catchAsync(async(req,res,next)=>{
+    const user=await User.findById(req.user.id).select('+password');
+     if(!user || !await user.correctPassword(req.body.passwordCurrent,user.password)){
+         return next(new AppError("Please entered correct password",401));
+     }
+     user.password=req.body.password;
+     user.passwordConfirm=req.body.passwordConfirm;
+     await user.save()
+     createAndSendToken(user,200,res)
+});
