@@ -51,9 +51,13 @@ userSchema.pre('save',async function(next){
     next();
 
 })
+userSchema.pre('save',function(next){
+    if(this.isModified('password') || this.isNew) next();
+    this.passwordChanged=Date.now()-1000;
+    next();
+})
 
 userSchema.methods.isPasswordChanged=function(JWtTokenTime){
-    console.log("fhrufh")
     if(this.passwordChanged){
         const passChangesTime=parseInt(this.passwordChanged.getTime()/1000,10);
         return JWtTokenTime < passChangesTime;

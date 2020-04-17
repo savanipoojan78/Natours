@@ -1,5 +1,6 @@
 const {promisify}=require('util')
 const jwt=require('jsonwebtoken')
+const crypto=require('crypto')
 
 const User=require('./../models/userModel');
 const catchAsync=require('./../utils/catchAsync');
@@ -113,7 +114,23 @@ exports.forgetPassword= catchAsync(async(req,res,next)=>{
 })
 
 exports.resetPassword=catchAsync(async(req,res,next)=>{
-    res.status(400).json({
-        status:'this router in not define'
+    const encryptPasswordResetToken=crypto.createHash('sha256').update(req.params.resetToken).digest('hex');
+    console.log('hello')
+    const user=await User.findOne( {passwordResetToken:encryptPasswordResetToken,
+        passwordResetTokenExpire:{$gt:Date.now()}}
+    )
+    console.log(user)
+    if(!user){
+        return next(new AppError('Forget Password link has Expired'),400)
+    }
+    user.password=req.body.password;
+    user.passwordConfirm=req.body.passwordConfirm;
+    user.passwordResetToken=undefined;
+    user.passwordResetTokenExpire=undefined;
+    await user.save();
+    const token=signInToken(user._id);
+    res.status(200).json({
+        status:'success',
+        token
     })
 })
