@@ -5,7 +5,6 @@ const developmentError=(err,res)=>{
         status:`${err.status}`.startsWith(4)?'failed':'error',
         message:err.errorMessage,
         error:err,
-        stack:err.stack
     })
 }
 const ProdError=(err,res)=>{
@@ -38,12 +37,19 @@ const handleValidationErrorDB= err=>{
     const message=`Invalid data input ${data.join('. ')}`;
     return new AppError(message,400);
 }
+const handleJwtTokenExpire=()=>{
+    return new AppError('Token is expired Please Login Againg',401)
+}
+const handleJwtTokenChanged=()=>{
+    return new AppError('Token is Not Valid Please Login Again',401)
+}
 module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
         developmentError(error,res)
     }
     else if(process.env.NODE_ENV==='production'){
+        console.log(error);
          if(error.name==='CastError'){
              error=handleCastErrorDB(err)
          }
@@ -51,6 +57,8 @@ module.exports=(err,req,res,next)=>{
             error=handleDuplicateErrorDB(err)
          }
          else if(error.name==='ValidationError') error= handleValidationErrorDB(err)
+         else if(error.name==='TokenExpiredError') error =handleJwtTokenExpire()
+         else if(error.name==='JsonWebTokenError') error =handleJwtTokenChanged()
         ProdError(error,res)
     }
 }

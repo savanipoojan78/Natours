@@ -31,7 +31,6 @@ app.use('/api/v1/users', userRouter);
 app.all('*',(req,res,next)=>{
     next(new AppError(`route ${req.originalUrl} is not defined`,400))
 });
-
 app.use(globalErrorController)
 
 module.exports = app;

@@ -1,5 +1,5 @@
 const express = require('express');
-
+const authController=require('./../controllers/authController');
 const tourController = require('../controllers/tourController');
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.route('/tour-stats').get(tourController.getTourStats);
 router.route('/monthy-plan/:year').get(tourController.getMonthlyPlan);
 router
     .route('/')
-    .get(tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
+    .get(authController.protect, tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
     .post(tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
 
 router
