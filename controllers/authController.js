@@ -23,11 +23,11 @@ exports.signup=catchAsync(async (req,res)=>{
 exports.login= catchAsync(async(req,res,next)=>{
     const {email,password}=req.body
     if(!email || !password){
-        next(new AppError('Please Provide email and password'),400)
+        return next(new AppError('Please Provide email and password',400))
     }
     const user=await User.findOne({email}).select('+password');
      if(!user || !await user.correctPassword(password,user.password)){
-         return next(new AppError('Please entered correct email & password'),401)
+         return next(new AppError("Please entered correct email & password",401));
      }
      const token=signInToken(user._id);
      res.status(200).json({

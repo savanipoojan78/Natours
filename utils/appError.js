@@ -3,6 +3,7 @@ class AppError extends Error{
         super(message);
         this.status=status;
         this.isOperational=true;
+        this.errorMessage=message
         Error.captureStackTrace(this,this.constructor)
     }
 }

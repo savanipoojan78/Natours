@@ -13,7 +13,7 @@ const app = require('./app');
 //console.log(process.env);
 
 // SERVER START
-const port = 9033 || process.env.PORT;
+const port = process.env.PORT;
 const server=app.listen(port, () => {
     console.log(`App running on port ${port}`);
 });

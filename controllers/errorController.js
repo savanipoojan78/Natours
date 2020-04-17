@@ -3,17 +3,18 @@ const developmentError=(err,res)=>{
     err.status=err.status || 400;
     res.status(err.status).json({
         status:`${err.status}`.startsWith(4)?'failed':'error',
-        message:err.message,
+        message:err.errorMessage,
         error:err,
         stack:err.stack
     })
 }
 const ProdError=(err,res)=>{
+    console.log(err)
     if(err.isOperational){
         err.status=err.status || 400;
     res.status(err.status).json({
         status:`${err.status}`.startsWith(4)?'failed':'error',
-        message:err.message
+        message:err.errorMessage
     })
     }
     else{
@@ -25,6 +26,7 @@ const ProdError=(err,res)=>{
 }
 const handleCastErrorDB = err =>{
     const message= `Invalid ${err.path}:${err.value}`
+    console.log(message);
     return new AppError(message,400)
 }
 const handleDuplicateErrorDB = err=>{
