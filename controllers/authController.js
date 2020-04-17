@@ -1,8 +1,10 @@
+const {promisify}=require('util')
+const jwt=require('jsonwebtoken')
+
 const User=require('./../models/userModel');
 const catchAsync=require('./../utils/catchAsync');
 const AppError=require('./../utils/appError')
-const {promisify}=require('util')
-const jwt=require('jsonwebtoken')
+const sendEmail=require('./../utils/email')
 
 const signInToken=(id)=>{
     console.log(id)
@@ -82,6 +84,32 @@ exports.forgetPassword= catchAsync(async(req,res,next)=>{
     //2 generate a random reset token
     const resetToken=user.createPasswordResetToken();
     await user.save({validateBeforeSave:false})
+
+    const resetLink=`${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+
+    const message=`Forget your password submit a request eith new Password and Confirm Password to :${resetLink}.\n
+    if you did't forget your password forget this mail`;
+
+    try{
+        await sendEmail({
+            email:user.email,
+            subject:'Reset Password This Link valid for Only 10 Min',
+            message:message
+        });
+    
+        res.status(200).json({
+            status:'success',
+            message:'mail send Sucessfully'
+        })
+    }catch(err){
+        user.passwordResetToken=undefined;
+        user.passwordResetTokenExpire=undefined;
+        await user.save({validateBeforeSave:false})
+        next(new AppError('failed to send the message',500));
+    }
+    
+
+
 })
 
 exports.resetPassword=catchAsync(async(req,res,next)=>{
