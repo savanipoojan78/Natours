@@ -60,5 +60,32 @@ exports.protect=catchAsync(async(req,res,next)=>{
     {
         next(new AppError('Password is changed please Login Again',401))
     }
+    req.user=currentUser;
     next();
+});
+
+exports.restrict=(...roles)=>{
+    return (req,res,next) =>{
+        if(!roles.includes(req.user.roles)){
+            return next(new AppError('You are not Authorized to perform this action',403))
+        }
+        next()
+    }
+};
+
+exports.forgetPassword= catchAsync(async(req,res,next)=>{
+    //check if user exist 
+    const user=await User.findOne({email:req.body.email});
+    if(!user){
+        next(new AppError('There is no User With this email address'),404);
+    }
+    //2 generate a random reset token
+    const resetToken=user.createPasswordResetToken();
+    await user.save({validateBeforeSave:false})
+})
+
+exports.resetPassword=catchAsync(async(req,res,next)=>{
+    res.status(400).json({
+        status:'this router in not define'
+    })
 })
