@@ -14,7 +14,16 @@ const signInToken=(id)=>{
 
 const createAndSendToken=(user,statusCode,res)=>{
     const token=signInToken(user._id)
-    res.status(201).json({
+    const options={
+        expires:new Date(Date.now()+process.env.JWT_COOKIE_EXPIRE_TIME*24*60*60*1000),
+        httpOnly:true
+    }
+    if(process.env.NODE_ENV==='production'){
+        options.secure=false;
+    }
+    res.cookie('jwt',token,options)
+    user.password=undefined;
+    res.status(statusCode).json({
         status:'success',
         token,
         data:{
