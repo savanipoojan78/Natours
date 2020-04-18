@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const helmet=require('helmet');
+const mongoSanitize=require('express-mongo-sanitize');
+const xss=require('xss-clean')
 const rateLimit=require('express-rate-limit')
 const AppError=require('./utils/appError')
 const tourRouter = require('./routes/tourRoutes');
@@ -34,6 +36,11 @@ app.use(express.json({max:'10kb'}));
 //To server Static file middlware
 app.use(express.static(`${__dirname}/public`));
 
+//DATA sanitization agaist Nosql query injection
+app.use(mongoSanitize())
+
+//Data sanitization agaist XSS
+app.use(xss())
 
 // Test Middleware
 app.use((req, res, next) => {
