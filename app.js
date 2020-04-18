@@ -8,6 +8,7 @@ const rateLimit=require('express-rate-limit')
 const AppError=require('./utils/appError')
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter=require('./routes/reviewRoutes');
 const globalErrorController=require('./controllers/errorController')
 
 const app = express();
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 //this two are middleware , Mount Our Router // if we get Router like '/api/v1/tours' then go to this @tourRouter Function
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews',reviewRouter);
 
 app.all('*',(req,res,next)=>{
     next(new AppError(`route ${req.originalUrl} is not defined`,400))
