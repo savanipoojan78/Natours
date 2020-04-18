@@ -31,7 +31,8 @@ exports.login= catchAsync(async(req,res,next)=>{
     if(!email || !password){
         return next(new AppError('Please Provide email and password',400))
     }
-    const user=await User.findOne({email}).select('+password');
+    const user=await User.findOne({email}).select('+password').select('+active');
+    console.log(user);
      if(!user || !await user.correctPassword(password,user.password)){
          return next(new AppError("Please entered correct email & password",401));
      }
@@ -53,7 +54,7 @@ exports.protect=catchAsync(async(req,res,next)=>{
     //3 check if User Exist
     const currentUser=await User.findById(decoded.id);
     if(!currentUser){
-        next(new AppError('the User beloging to this User No Longer Exist',401))
+        next(new AppError('the User beloging to this token No Longer Exist',401))
     }
 
     //4 check if token given before password is expire

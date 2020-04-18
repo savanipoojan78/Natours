@@ -25,12 +25,20 @@ exports.updateMe=catchAsync(async(req,res,next)=>{
         next(new AppError('This is not For changing the password',400));
     }
     const filterBody=filterObj(req.body,'name','email');
-    const user=await User.findByIdAndUpdate(req.user.id,filterBody,{runValidators:true,new :true}).select('-__v')
+    const user=await User.findByIdAndUpdate(req.user._id,filterBody,{runValidators:true,new :true}).select('-__v')
     res.status(200).json({
         status:'sucess',
         data:{
             user
         }
+    })
+});
+
+exports.deleteMe=catchAsync(async (req,res,next)=>{
+    await User.findByIdAndUpdate(req.user._id,{active:false})
+    res.status(200).json({
+        status:'success',
+        data:null
     })
 })
 
