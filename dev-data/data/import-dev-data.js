@@ -1,6 +1,6 @@
-const fs = require('fs');
 const dotenv = require('dotenv');
-dotenv.config({ path: '../../config.env' });
+dotenv.config({ path: `${__dirname}/../../config.env` });
+const fs = require('fs');
 const Tour = require('../../models/tourModel');
 const mongoose = require('mongoose');
 
@@ -9,7 +9,8 @@ mongoose
     .connect(DB, {
         useNewUrlParser: true,
         useCreateIndex: true,
-        useFindAndModify: false
+        useFindAndModify: false,
+        useUnifiedTopology: true
     })
     .then(() => {
         console.log('DB connection Successfull');
@@ -17,7 +18,7 @@ mongoose
 
 //READ JSON File
 const tours = JSON.parse(
-    fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+    fs.readFileSync(`${__dirname}/tours.json`, 'utf-8')
 );
 
 //IMPORT DATA INTO DB

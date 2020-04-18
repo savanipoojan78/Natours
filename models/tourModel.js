@@ -74,7 +74,28 @@ const tourSchema = new mongoose.Schema({
     isPublish : {
         type:Boolean,
         deafult:true,
-    }
+    },
+    startLocation:{
+        type:{
+            type:String,
+            deafult:'Point',
+            enum:['Point']
+        },
+        coordinates:[Number],
+        description:String,
+        address:String
+    },
+    locations:[{
+        type:{
+            type:String,
+            deafult:'Point',
+            enum:['Point']
+        },
+        coordinates:[Number],
+        description:String,
+        address:String,
+        day:Number
+    }]
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
