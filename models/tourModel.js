@@ -110,6 +110,11 @@ const tourSchema = new mongoose.Schema({
 tourSchema.virtual('tourWeekend').get(function(){
     return this.duration/7;
 });
+tourSchema.virtual('reviews',{
+    ref:'Reivew',
+    foreignField:'tour',
+    localField:'_id'
+});
 
 // DOC Middalware in mongoose this middlware called before .save() .create methode but in inserMany in didn't call this middlware.
 tourSchema.pre('save', function(next){
