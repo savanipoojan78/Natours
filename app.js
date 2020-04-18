@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit=require('express-rate-limit')
 const AppError=require('./utils/appError')
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -12,12 +13,17 @@ console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev')); // Output look like this :- GET /api/v1/tours 200 263.782 ms - 8642
 }
+const limit=rateLimit({
+    max:100,
+    windowMs:60*60*1000,
+    message:'Too many Request from this IP ,please try again after one hour'
+});
 
-//MidleWare
+//Global MidleWare
 //to get access of body parameter in response
 app.use(express.json());
-
 app.use(express.static(`${__dirname}/public`));
+app.use('/api',limit)
 
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
