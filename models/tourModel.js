@@ -95,7 +95,13 @@ const tourSchema = new mongoose.Schema({
         description:String,
         address:String,
         day:Number
-    }]
+    }],
+    guides:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'User'
+        }
+    ]
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
@@ -122,7 +128,13 @@ tourSchema.pre(/^find/,function(next){
     this.find({isPublish:{$ne:false}});
     next();
 })
-
+tourSchema.pre(/^find/,function(next){
+    this.populate({
+        path:'guides',
+        select:'-__v -passwordChanged'
+    })
+    next();
+})
 //Aggregation middlware
 tourSchema.pre('aggregate',function(next){
     this.pipeline().unshift({$match:{isPublish:{$ne:false}}})
