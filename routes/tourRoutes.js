@@ -23,5 +23,5 @@ router
     .delete(authController.protect,authController.restrict('admin','lead-guide'),tourController.deleteTour);
 
 //nested router
-router.use('/:tourId/review',reviewRouter);   
+router.use('/:tourId/reviews',reviewRouter);   
 module.exports = router;

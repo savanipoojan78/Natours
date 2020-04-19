@@ -3,7 +3,11 @@ const AppError=require('./../utils/appError')
 const Review=require('./../models/reviewModel');
 
 exports.getAllReviews=catchAsync(async(req,res,next)=>{
-    const review=await Review.find();
+    let filter={};
+    const tourId=req.params.tourId;
+    if(tourId)filter={tour:tourId};
+    const review=await Review.find(filter);
+    console.log(review);
     res.status(200).json({
         status:'sucess',
         results:review.length,
