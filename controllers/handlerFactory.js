@@ -72,12 +72,11 @@ exports.getAll=Model=>catchAsync(async(req, res,next) => {
 
     // EXECUTE THE QUERY
     const doc = await features.query;
-
     //SEND RESPONSE
     res.status(200).json({
         status: 'success',
         requestedAt: req.requestTime,
-        results: tours.length,
+        results: doc.length,
         data: {
             data:doc
         }
