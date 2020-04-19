@@ -16,6 +16,10 @@ router
     .get(tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
     .post(authController.protect,authController.restrict('admin','lead-guide'),tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
 
+router.
+    route('/tours-within/:distance/point/:latlng/:unit')
+    .get(tourController.getToursWithIn)
+
 router
     .route('/:id')
     .get(tourController.getTour)
