@@ -20,6 +20,8 @@ router.
     route('/tours-within/:distance/point/:latlng/:unit')
     .get(tourController.getToursWithIn)
 
+router.route('/distances/:latlng/unit/:unit').get(tourController.getDistanceTour)
+
 router
     .route('/:id')
     .get(tourController.getTour)

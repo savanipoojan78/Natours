@@ -45,7 +45,7 @@ const handleJwtTokenChanged=()=>{
 module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
-        console.log(error);
+        console.log(err);
         developmentError(error,res)
     }
     else if(process.env.NODE_ENV==='production'){

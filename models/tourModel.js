@@ -145,10 +145,10 @@ tourSchema.pre(/^find/,function(next){
     next();
 })
 //Aggregation middlware
-tourSchema.pre('aggregate',function(next){
-    this.pipeline().unshift({$match:{isPublish:{$ne:false}}})
-    next();
-})
+// tourSchema.pre('aggregate',function(next){
+//     this.pipeline().unshift({$match:{isPublish:{$ne:false}}})
+//     next();
+// })
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
