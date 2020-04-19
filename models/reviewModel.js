@@ -62,11 +62,20 @@ reviewSchema.post('save',function(){
     this.constructor.calculateAvgRating(this.tour)
 })
 reviewSchema.pre(/^findOneAnd/,async function(next){
-    this.r=await this.findOne();
+    try{
+        this.r=await this.findOne();
+    }catch(err){
+        next();
+    }
     next();
 });
 reviewSchema.post(/^findOneAnd/,async function(){
-    await this.r.constructor.calculateAvgRating(this.r.tour)
+    try{
+        await this.r.constructor.calculateAvgRating(this.r.tour)
+    }catch(err){
+        console.log(err);
+    }
+
 });
 reviewSchema.pre(/^find/,function(next){
     // this.populate({
