@@ -3,12 +3,11 @@ const developmentError=(err,res)=>{
     err.status=err.status || 400;
     res.status(err.status).json({
         status:`${err.status}`.startsWith(4)?'failed':'error',
-        message:err.errorMessage,
-        error:err,
+        message:err.errmsg,
+        err
     })
 }
 const ProdError=(err,res)=>{
-    console.log(err)
     if(err.isOperational){
         err.status=err.status || 400;
     res.status(err.status).json({
@@ -46,10 +45,11 @@ const handleJwtTokenChanged=()=>{
 module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
+        console.log(error);
         developmentError(error,res)
     }
     else if(process.env.NODE_ENV==='production'){
-        console.log(error);
+        console.log(err);
          if(error.name==='CastError'){
              error=handleCastErrorDB(err)
          }
