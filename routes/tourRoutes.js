@@ -13,13 +13,13 @@ router.route('/tour-stats').get(tourController.getTourStats);
 router.route('/monthy-plan/:year').get(tourController.getMonthlyPlan);
 router
     .route('/')
-    .get(authController.protect, tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
-    .post(tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
+    .get(tourController.getAllTours) // if route is /api/v1/users and it is http get methode then @getAllTours function will be Call.
+    .post(authController.protect,authController.restrict('admin','lead-guide'),tourController.createTour); // if route is /api/v1/users and it is http post methode then @createTour function will be Call.
 
 router
     .route('/:id')
     .get(tourController.getTour)
-    .patch(tourController.updateTour)
+    .patch(authController.protect,authController.restrict('admin','lead-guide'),tourController.updateTour)
     .delete(authController.protect,authController.restrict('admin','lead-guide'),tourController.deleteTour);
 
 //nested router
