@@ -10,16 +10,6 @@ const filterObj=(obj, ...filters)=>{
     })
     return newObj;
 }
-exports.getAllUsers = catchAsync(async(req, res,next) => {
-    const user=await User.find().select('-__v')
-    
-    res.status(201).json({
-        status:'success',
-        user:{
-           user
-        }
-    })
-});
 
 exports.updateMe=catchAsync(async(req,res,next)=>{
     if(req.body.password || req.body.passwordConfirm){
@@ -49,12 +39,8 @@ exports.createUser = (req, res) => {
         message: 'This route is not yet Define'
     });
 };
-exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet Define'
-    });
-};
-// Do not Update Password With This
+exports.getUser = factory.getOne(User);
+exports.getAllUsers = factory.getAll(User);
+// Do not Update Password With
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
