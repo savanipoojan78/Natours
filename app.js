@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const helmet=require('helmet');
+const path=require('path');
 const mongoSanitize=require('express-mongo-sanitize');
 const xss=require('xss-clean')
 const hpp=require('hpp')
@@ -12,6 +13,8 @@ const reviewRouter=require('./routes/reviewRoutes');
 const globalErrorController=require('./controllers/errorController')
 
 const app = express();
+app.set('view engine','pug');
+app.set('views',path.join(__dirname,'views'));
 
 // *** Global MidleWare ****
 
@@ -61,7 +64,9 @@ app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
-
+app.get('/', (req, res) => {
+    res.status(200).render('base');
+})
 //this two are middleware , Mount Our Router // if we get Router like '/api/v1/tours' then go to this @tourRouter Function
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
