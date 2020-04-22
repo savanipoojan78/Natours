@@ -65,7 +65,19 @@ app.use((req, res, next) => {
     next();
 });
 app.get('/', (req, res) => {
-    res.status(200).render('base');
+    res.status(200).render('base',{
+        tour:'Poojan'
+    });
+})
+app.get('/overview',(req,res)=>{
+    res.status(200).render('overview',{
+        title:"All Tours"
+    })
+})
+app.get('/tour',(req,res)=>{
+    res.status(200).render('overview',{
+        title:"The Forest Hiker"
+    })
 })
 //this two are middleware , Mount Our Router // if we get Router like '/api/v1/tours' then go to this @tourRouter Function
 app.use('/api/v1/tours', tourRouter);
