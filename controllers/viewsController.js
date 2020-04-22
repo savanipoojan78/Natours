@@ -9,8 +9,13 @@ exports.getOverview=catchAsync(async (req,res)=>{
     })
 });
 
-exports.getTour=(req,res)=>{
+exports.getTour=catchAsync (async (req,res)=>{
+    const tour=await Tour.findOne({slug:req.params.slug}).populate({
+        path:'reviews',
+        fields:'rating review user'
+    });
     res.status(200).render('tour',{
-        title:"The Forest Hiker"
+        title:"The Forest Hiker",
+        tour
     })
-}
+})
