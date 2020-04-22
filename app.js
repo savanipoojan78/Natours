@@ -10,6 +10,7 @@ const AppError=require('./utils/appError')
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter=require('./routes/reviewRoutes');
+const viewRouter=require('./routes/viewRouters');
 const globalErrorController=require('./controllers/errorController')
 
 const app = express();
@@ -64,21 +65,7 @@ app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
-app.get('/', (req, res) => {
-    res.status(200).render('base',{
-        tour:'Poojan'
-    });
-})
-app.get('/overview',(req,res)=>{
-    res.status(200).render('overview',{
-        title:"All Tours"
-    })
-})
-app.get('/tour',(req,res)=>{
-    res.status(200).render('overview',{
-        title:"The Forest Hiker"
-    })
-})
+app.use('/',viewRouter)
 //this two are middleware , Mount Our Router // if we get Router like '/api/v1/tours' then go to this @tourRouter Function
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
