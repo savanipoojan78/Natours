@@ -11,6 +11,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter=require('./routes/reviewRoutes');
 const viewRouter=require('./routes/viewRouters');
+const cookieParser=require('cookie-parser');
 const globalErrorController=require('./controllers/errorController')
 
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api',limit)
 
 //To get access of body parameter in response
 app.use(express.json({max:'10kb'}));
+app.use(cookieParser());
 
 //To server Static file middlware
 app.use(express.static(`${__dirname}/public`));
@@ -63,6 +65,9 @@ app.use(hpp({
 // Test Middleware
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    console.log(`cookie is `,req.cookies);
     next();
 });
 app.use('/',viewRouter)
