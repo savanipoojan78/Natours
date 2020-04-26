@@ -18,4 +18,8 @@ exports.getTour=catchAsync (async (req,res)=>{
         title:`${tour.name} Tour`,
         tour
     })
+});
+
+exports.login=catchAsync(async(req,res)=>{
+    res.status(200).render('login');
 })
