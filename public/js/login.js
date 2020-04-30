@@ -23,3 +23,20 @@ export const login=async (email,password)=>{
     }
 }
 
+export const logout=async()=>{
+    try{
+        const res=await axios.get('http://localhost:2000/api/v1/users/logout');
+        if (res.data.status === 'success') {
+            showAlert('success', 'Logged out successfully!');
+            window.setTimeout(()=>{
+                console.log('timecalled');
+                location.assign('/');
+            },1500);
+          }
+    }catch(err){
+        //const data=JOSN.parse(err)
+        console.log('err is',err.response);
+        showAlert('error', err.response.data.err.errorMessage);
+    }
+}
+

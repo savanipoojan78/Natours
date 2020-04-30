@@ -59,6 +59,16 @@ exports.isLoggedIn = async (req, res, next) => {
     }
     next();
 };
+exports.logout=(req,res)=>{
+    const cookieOptions={
+        expires:new Date(Date.now()+10*1000),
+        httpOnly:true
+    }
+    res.cookie('jwt','logout',cookieOptions)
+    res.status(200).json({
+        status:'success'
+    })
+}
 exports.signup=catchAsync(async (req,res)=>{
     const newUser=await User.create(req.body);
     createAndSendToken(newUser,200,res)
