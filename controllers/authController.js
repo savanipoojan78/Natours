@@ -22,7 +22,6 @@ const createAndSendToken=(user,statusCode,res)=>{
         options.secure=false;
     }
     res.cookie('jwt',token,options)
-    // console.log(res.cookie);
     user.password=undefined;
     res.status(statusCode).json({
         status:'success',
@@ -32,7 +31,36 @@ const createAndSendToken=(user,statusCode,res)=>{
             user:user
         }
     })
-}
+};
+exports.isLoggedIn = async (req, res, next) => {
+    if (req.cookies.jwt) {
+      try {
+        // 1) verify token
+        const decoded = await promisify(jwt.verify)(
+          req.cookies.jwt,
+          process.env.JWT_SECRET
+        );
+  
+        // 2) Check if user still exists
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+          return next();
+        }
+  
+        // 3) Check if user changed password after the token was issued
+        if (currentUser.chisLoggedInangedPasswordAfter(decoded.iat)) {
+          return next();
+        }
+  
+        // THERE IS A LOGGED IN USER
+        res.locals.user = currentUser;
+        return next();
+      } catch (err) {
+        return next();
+      }
+    }
+    next();
+  };
 exports.signup=catchAsync(async (req,res)=>{
     const newUser=await User.create(req.body);
     createAndSendToken(newUser,200,res)

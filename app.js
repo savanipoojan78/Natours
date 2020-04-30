@@ -65,8 +65,6 @@ app.use(hpp({
 // Test Middleware
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     console.log(`cookie is `,req.cookies);
     next();
 });
