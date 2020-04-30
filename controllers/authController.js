@@ -36,10 +36,7 @@ exports.isLoggedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
       try {
         // 1) verify token
-        const decoded = await promisify(jwt.verify)(
-          req.cookies.jwt,
-          process.env.JWT_SECRET
-        );
+        const decoded=await promisify(jwt.verify)(req.cookies.jwt,process.env.JWT_SECRECT)
   
         // 2) Check if user still exists
         const currentUser = await User.findById(decoded.id);
@@ -48,7 +45,7 @@ exports.isLoggedIn = async (req, res, next) => {
         }
   
         // 3) Check if user changed password after the token was issued
-        if (currentUser.chisLoggedInangedPasswordAfter(decoded.iat)) {
+        if (currentUser.isPasswordChanged(decoded.iat)) {
           return next();
         }
   
@@ -56,11 +53,12 @@ exports.isLoggedIn = async (req, res, next) => {
         res.locals.user = currentUser;
         return next();
       } catch (err) {
+          console.log('er id',err);
         return next();
       }
     }
     next();
-  };
+};
 exports.signup=catchAsync(async (req,res)=>{
     const newUser=await User.create(req.body);
     createAndSendToken(newUser,200,res)
