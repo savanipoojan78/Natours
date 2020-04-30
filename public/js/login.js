@@ -1,5 +1,7 @@
 
-const login=async (email,password)=>{
+import axios from 'axios';
+import {showAlert} from './alert';
+export const login=async (email,password)=>{
     console.log(email,password);
     try{
         const res=await axios.post('http://localhost:2000/api/v1/users/login',{
@@ -8,19 +10,16 @@ const login=async (email,password)=>{
     
         });
         if (res.data.status === 'success') {
-            window.alert('success', 'Logged in successfully!');
-            window.setTimeout(() => {
-              location.assign('/');
-            }, 1500);
+            showAlert('success', 'Logged in successfully!');
+            window.setTimeout(()=>{
+                console.log('timecalled');
+                location.assign('/');
+            },1500);
           }
     }catch(err){
-        console.log(err.response);
+        //const data=JOSN.parse(err)
+        console.log('err is',err.response);
+        showAlert('error', err.response.data.err.errorMessage);
     }
 }
 
-document.querySelector('.form').addEventListener('submit',e=>{
-    e.preventDefault();
-    const email=document.getElementById('email').value;
-    const password=document.getElementById('password').value;
-    login(email,password);
-})

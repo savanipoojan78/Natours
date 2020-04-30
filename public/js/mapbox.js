@@ -1,5 +1,6 @@
-const locations=JSON.parse(document.getElementById("map").dataset.locations);
 
+
+export const showMap=(locations)=>{
 
   mapboxgl.accessToken = 'pk.eyJ1Ijoic2F2YW5pNzgiLCJhIjoiY2s5Yms0YjV1MDEyNDNscTk0YmE0aXcwaiJ9.1Yqpe6MqoaISnEBs368ZBA';
   var map = new mapboxgl.Map({
@@ -37,3 +38,5 @@ const locations=JSON.parse(document.getElementById("map").dataset.locations);
         left:200
     }
   })
+
+};

@@ -7,7 +7,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon server.js",
         "start:prod": "export NODE_ENV=production && PORT=9034 && nodemon server.js",
-        "debug": "ndb server.js"
+        "debug": "ndb server.js",
+        "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+        "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
     },
     "repository": {
         "type": "git",
@@ -20,6 +22,7 @@
     },
     "homepage": "https://github.com/savanipoojan78/Natours#readme",
     "dependencies": {
+        "@babel/polyfill": "^7.8.7",
         "axios": "^0.19.2",
         "bcryptjs": "^2.4.3",
         "cookie-parser": "^1.4.5",
@@ -41,6 +44,7 @@
     },
     "devDependencies": {
         "cross-env": "^7.0.2",
-        "ndb": "^1.1.5"
+        "ndb": "^1.1.5",
+        "parcel-bundler": "^1.12.4"
     }
 }
