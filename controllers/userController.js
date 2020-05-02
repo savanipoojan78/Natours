@@ -22,7 +22,7 @@ exports.updateMe=catchAsync(async(req,res,next)=>{
     const filterBody=filterObj(req.body,'name','email');
     const user=await User.findByIdAndUpdate(req.user._id,filterBody,{runValidators:true,new :true}).select('-__v')
     res.status(200).json({
-        status:'sucess',
+        status:'success',
         data:{
             user
         }
