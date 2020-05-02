@@ -28,3 +28,9 @@ exports.getTour=catchAsync (async (req,res,next)=>{
 exports.login=catchAsync(async(req,res)=>{
     res.status(200).render('login');
 })
+
+exports.me=(req,res)=>{
+    res.status(200).render('account',{
+        title:'Your Account'
+    });
+}
