@@ -1,27 +1,53 @@
 const AppError=require('./../utils/appError')
-const developmentError=(err,res)=>{
-    err.status=err.status || 400;
-    res.status(err.status).json({
-        status:`${err.status}`.startsWith(4)?'failed':'error',
-        message:err.errmsg,
-        err
-    })
-}
-const ProdError=(err,res)=>{
-    if(err.isOperational){
+const developmentError=(err,req,res)=>{
+    if(req.originalUrl.startsWith('/api')){
         err.status=err.status || 400;
-    res.status(err.status).json({
-        status:`${err.status}`.startsWith(4)?'failed':'error',
-        message:err.errorMessage
-    })
-    }
-    else{
-        res.status(500).json({
-            status:'failed',
-            message:'Something Went Wrong'
+        return res.status(err.status).json({
+            status:`${err.status}`.startsWith(4)?'failed':'error',
+            message:err.errorMessage,
+            err
         })
     }
+    return res.status(400).render('error',{
+        title:'Something Went Wrong',
+        msg:err.errorMessage
+    })
+   
 }
+const ProdError=(err,req,res)=>{
+    console.log(err);
+    if(req.originalUrl.startsWith('/api')){
+        if(err.isOperational){
+                err.status=err.status || 400;
+                return res.status(err.status).json({
+                status:`${err.status}`.startsWith(4)?'failed':'error',
+                message:err.errorMessage
+            })
+        }
+        else{
+            return res.status(500).json({
+                status:'failed',
+                message:'Something Went Wrong'
+            })
+        }
+    }
+    if(err.isOperational){
+        err.status=err.status || 400;
+        return res.status(err.status).render('error',
+            {
+            title:'Something Went Wrong',
+            msg:err.errorMessage
+        })
+        }
+        console.log(err);
+        return res.status(500).render('error',{
+            title:'Something Went Wrong',
+            msg:'Please Try Again Sometimes after'
+        })
+}
+
+    
+
 const handleCastErrorDB = err =>{
     const message= `Invalid ${err.path}:${err.value}`
     console.log(message);
@@ -46,7 +72,7 @@ module.exports=(err,req,res,next)=>{
     let error={...err};
     if(process.env.NODE_ENV==='development'){
         console.log(err);
-        developmentError(error,res)
+        developmentError(error,req,res)
     }
     else if(process.env.NODE_ENV==='production'){
         console.log(err);
@@ -59,6 +85,6 @@ module.exports=(err,req,res,next)=>{
          else if(error.name==='ValidationError') error= handleValidationErrorDB(err)
          else if(error.name==='TokenExpiredError') error =handleJwtTokenExpire()
          else if(error.name==='JsonWebTokenError') error =handleJwtTokenChanged()
-        ProdError(error,res)
+        ProdError(error,req,res)
     }
 }
