@@ -1,20 +1,14 @@
 import axios from 'axios';
 import {showAlert} from './alert';
 
-export const updateProfile=async (name,email)=>{
+export const updateProfile=async (data,type)=>{
 
     try{
-        const res=await axios.patch('http://localhost:2000/api/v1/users/updateMe',{
-            name,
-            email
-        });
-        console.log('update res',res.data);
+        const url=type==='password'?'http://localhost:2000/api/v1/users/updatePassword':'http://localhost:2000/api/v1/users/updateMe'
+        const res=await axios.patch(url,data);
         if (res.data.status === 'success') {
-            showAlert('success', 'Data Changed successfully!');
-            window.setTimeout(()=>{
-                location.assign('/me');
-            },1000);
-          }
+            showAlert('success', `${type.toUppearCase()} Changed successfully!`);
+        }
     }catch(err){
         //const data=JOSN.parse(err)
         console.log('err is',err.response);
