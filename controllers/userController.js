@@ -76,9 +76,9 @@ exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
 exports.uploadPhoto= upload.single('photo');
 exports.resizeUploadPhoto=(req,res,next)=>{
-    if(!req.file) next();
-    req.file.filename=`user-${req.user._id}-${Date.now()}.jpeg`;
+    if(!req.file) return next();
     console.log(req.file);
+    req.file.filename=`user-${req.user._id}-${Date.now()}.jpeg`;
     Jimp.read(req.file.buffer,(err,img)=>{
         if(err){
             next(new AppError('Error while Uploading Photo',400))

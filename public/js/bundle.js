@@ -8383,7 +8383,6 @@ var showAlert = function showAlert(type, message) {
   closeAlert();
   var markup = "<div class=\"alert alert--".concat(type, "\">").concat(message, "</div>");
   document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
-  console.log('show alert-I');
   window.setTimeout(closeAlert, 1500);
 };
 
@@ -8575,21 +8574,21 @@ var updateProfile = /*#__PURE__*/function () {
           case 4:
             res = _context.sent;
 
-            if (res.data.status === 'success') {
-              (0, _alert.showAlert)('success', "".concat(type.toUppearCase(), " Changed successfully!"));
+            if (res.data.status === "success") {
+              (0, _alert.showAlert)('success', "".concat(type.toUpperCase(), " Changed successfully!"));
             }
 
-            _context.next = 12;
+            _context.next = 11;
             break;
 
           case 8:
             _context.prev = 8;
             _context.t0 = _context["catch"](0);
             //const data=JOSN.parse(err)
-            console.log('err is', _context.t0.response);
+            //console.log('err is',err);
             (0, _alert.showAlert)('error', _context.t0.response.data.err.message);
 
-          case 12:
+          case 11:
           case "end":
             return _context.stop();
         }
@@ -8904,12 +8903,11 @@ if (map) {
 if (updateProfileButton) {
   updateProfileButton.addEventListener('click', function (e) {
     e.preventDefault();
-    var email = document.getElementById('email').value;
-    var name = document.getElementById('name').value;
-    (0, _updateProfile.updateProfile)({
-      name: name,
-      email: email
-    }, 'data');
+    var form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    (0, _updateProfile.updateProfile)(form, 'data');
   });
 }
 
@@ -8983,7 +8981,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43277" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45619" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -65,7 +65,6 @@ app.use(hpp({
 // Test Middleware
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
-    console.log(`cookie is `,req.cookies);
     next();
 });
 app.use('/',viewRouter)
@@ -75,7 +74,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews',reviewRouter);
 
 app.all('*',(req,res,next)=>{
-    next(new AppError(`route ${req.originalUrl} is not defined`,400))
+    //next(new AppError(`route ${req.originalUrl} is not defined`,400))
 });
 app.use(globalErrorController)
 

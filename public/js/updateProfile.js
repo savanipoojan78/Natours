@@ -6,12 +6,12 @@ export const updateProfile=async (data,type)=>{
     try{
         const url=type==='password'?'http://localhost:2000/api/v1/users/updatePassword':'http://localhost:2000/api/v1/users/updateMe'
         const res=await axios.patch(url,data);
-        if (res.data.status === 'success') {
-            showAlert('success', `${type.toUppearCase()} Changed successfully!`);
+        if (res.data.status === "success") {
+            showAlert('success', `${type.toUpperCase()} Changed successfully!`);
         }
     }catch(err){
         //const data=JOSN.parse(err)
-        console.log('err is',err.response);
+        //console.log('err is',err);
         showAlert('error', err.response.data.err.message);
     }
 }
