@@ -1,6 +1,7 @@
 const User=require('./../models/userModel')
 const catchAsync = require('./../utils/catchAsync')
 const multer=require('multer');
+const Jimp = require('jimp');
 const AppError=require('./../utils/appError')
 const factory=require('./handlerFactory');
 
@@ -12,15 +13,16 @@ const filterObj=(obj, ...filters)=>{
     })
     return newObj;
 }
-const multerStorage=multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,'public/img/users')
-    },
-    filename:function(req,file,cb){
-        const ext=file.mimetype.split('/')[1];
-        cb(null,`user-${req.user._id}-${Date.now()}.${ext}`)
-    }
-})
+// const multerStorage=multer.diskStorage({
+//     destination: function(req,file,cb){
+//         cb(null,'public/img/users')
+//     },
+//     filename:function(req,file,cb){
+//         const ext=file.mimetype.split('/')[1];
+//         cb(null,`user-${req.user._id}-${Date.now()}.${ext}`)
+//     }
+// })
+const multerStorage=multer.memoryStorage();
 const filter=(req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
         cb(null,true)
@@ -73,3 +75,15 @@ exports.getAllUsers = factory.getAll(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
 exports.uploadPhoto= upload.single('photo');
+exports.resizeUploadPhoto=(req,res,next)=>{
+    if(!req.file) next();
+    req.file.filename=`user-${req.user._id}-${Date.now()}.jpeg`;
+    console.log(req.file);
+    Jimp.read(req.file.buffer,(err,img)=>{
+        if(err){
+            next(new AppError('Error while Uploading Photo',400))
+        }
+        img.resize(500,500).quality(90).write(`public/img/users/${req.file.filename}`)
+    });
+    next();
+}
