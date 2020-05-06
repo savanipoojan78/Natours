@@ -22,7 +22,6 @@ const multerStorage=multer.diskStorage({
     }
 })
 const filter=(req,file,cb)=>{
-    console.log(file);
     if(file.mimetype.startsWith('image')){
         cb(null,true)
     }else
@@ -32,7 +31,7 @@ const upload=multer({
     storage:multerStorage,
     fileFilter:filter,
     limits:{
-        fileSize:5
+        fileSize:5000000
     }
 });
 exports.getMe=(req,res,next)=>{
@@ -44,6 +43,7 @@ exports.updateMe=catchAsync(async(req,res,next)=>{
         next(new AppError('This is not For changing the password',400));
     }
     const filterBody=filterObj(req.body,'name','email');
+    if(req.file)filterBody.photo=req.file.filename;
     const user=await User.findByIdAndUpdate(req.user._id,filterBody,{runValidators:true,new :true}).select('-__v')
     res.status(200).json({
         status:'success',
@@ -72,18 +72,4 @@ exports.getAllUsers = factory.getAll(User);
 // Do not Update Password With
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
-exports.uploadPhoto= (req,res,next)=>{
-    var uploadPic=upload.single('photo');
-    uploadPic(req, res, function (err) {
-        if(err){
-            if(err.isOperational){
-                next(new AppError(err.errorMessage,err.status));
-            }
-            else{
-                console.log(JSON.stringify(err,null,4));
-                next(new AppError(err.message,400)); 
-            }
-        }
-    })
-    next();
-}
+exports.uploadPhoto= upload.single('photo');
