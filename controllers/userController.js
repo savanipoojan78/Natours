@@ -74,8 +74,10 @@ exports.getAllUsers = factory.getAll(User);
 // Do not Update Password With
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
+
+
 exports.uploadPhoto= upload.single('photo');
-exports.resizeUploadPhoto=(req,res,next)=>{
+exports.resizeUploadPhoto=catchAsync(async(req,res,next)=>{
     if(!req.file) return next();
     console.log(req.file);
     req.file.filename=`user-${req.user._id}-${Date.now()}.jpeg`;
@@ -86,4 +88,4 @@ exports.resizeUploadPhoto=(req,res,next)=>{
         img.resize(500,500).quality(90).write(`public/img/users/${req.file.filename}`)
     });
     next();
-}
+});

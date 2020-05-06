@@ -25,7 +25,10 @@ router.route('/distances/:latlng/unit/:unit').get(tourController.getDistanceTour
 router
     .route('/:id')
     .get(tourController.getTour)
-    .patch(authController.protect,authController.restrict('admin','lead-guide'),tourController.updateTour)
+    .patch(authController.protect,authController.restrict('admin','lead-guide'),
+    tourController.uploadTourPhoto,
+    tourController.resizeTourPhoto
+    ,tourController.updateTour)
     .delete(authController.protect,authController.restrict('admin','lead-guide'),tourController.deleteTour);
 
 //nested router

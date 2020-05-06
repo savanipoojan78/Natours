@@ -2,6 +2,53 @@ const Tour = require('../models/tourModel');
 const catchAsync =require('../utils/catchAsync');
 const AppError=require('./../utils/appError');
 const factory=require('./handlerFactory');
+const Jimp = require('jimp');
+const multer=require('multer');
+
+const multerStorage=multer.memoryStorage();
+const filter=(req,file,cb)=>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true)
+    }else
+    cb(new AppError('Upload image only',400),false)
+}
+const upload=multer({
+    storage:multerStorage,
+    fileFilter:filter,
+    limits:{
+        fileSize:5000000
+    }
+});
+
+exports.uploadTourPhoto= upload.fields([
+{name:'imageCover',maxCount:1},
+{name:'images',maxCount:3}
+]);
+exports.resizeTourPhoto=catchAsync(async (req,res,next)=>{
+    if(!req.files.images && !req.files.imageCover) return next();
+    //1) resize for image cover
+    req.body.imageCover=`tour-${req.params.id}-${Date.now()}.jpeg`;
+    Jimp.read(req.files.imageCover[0].buffer,(err,img)=>{
+        if(err){
+            next(new AppError('Error while Uploading Photo',400))
+        }
+        img.resize(2000,1333).quality(90).write(`public/img/tours/${req.body.imageCover}`)
+    });
+
+    //2) for images resize
+    req.body.images=[];
+   Promise.all(req.files.images.map(async(file,i)=>{
+        const filename=`tour-${req.params.id}-${Date.now()}-${i+1}.jpeg`;
+        Jimp.read(file.buffer,(err,img)=>{
+            if(err){
+                next(new AppError('Error while Uploading Photo',400))
+            }
+            img.resize(2000,1333).quality(90).write(`public/img/tours/${filename}`)
+        });
+        req.body.images.push(filename)
+    }));
+    next();
+});
 
 exports.aliasTopTours = async(req, res, next) => {
     req.query.limit = '5';

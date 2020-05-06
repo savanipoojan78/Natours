@@ -20,7 +20,7 @@ exports.updateOne=Model=>catchAsync(async(req, res,next) => {
         new: true,
         runValidators: true
     });
-    console.log(doc)
+    //console.log(doc)
     if(!doc){
         return next(new AppError('can not find this Document With Given Id',404))
     }
