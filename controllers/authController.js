@@ -132,22 +132,15 @@ exports.forgetPassword= catchAsync(async(req,res,next)=>{
     if(!user){
         next(new AppError('There is no User With this email address'),404);
     }
+    console.log(user);
     //2 generate a random reset token
     const resetToken=user.createPasswordResetToken();
+    console.log(resetToken);
     await user.save({validateBeforeSave:false})
-
-    const resetLink=`${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-
-    const message=`Forget your password submit a request eith new Password and Confirm Password to :${resetLink}.\n
-    if you did't forget your password forget this mail`;
-
     try{
-        await sendEmail({
-            email:user.email,
-            subject:'Reset Password This Link valid for Only 10 Min',
-            message:message
-        });
-    
+        const resetLink=`${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+        await new Email(user,resetLink).sendResetPassword()
+        console.log('pass');
         res.status(200).json({
             status:'success',
             message:'mail send Sucessfully'
@@ -168,7 +161,6 @@ exports.resetPassword=catchAsync(async(req,res,next)=>{
     const user=await User.findOne( {passwordResetToken:encryptPasswordResetToken,
         passwordResetTokenExpire:{$gt:Date.now()}}
     )
-    console.log(user)
     if(!user){
         return next(new AppError('Forget Password link has Expired'),400)
     }
