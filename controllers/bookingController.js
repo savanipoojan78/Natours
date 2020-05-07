@@ -17,7 +17,7 @@ exports.getSession=catchAsync(async(req,res,next)=>{
             description: tour.summary,
             images:[`https://www.natours.dev/img/tours/tour-2-1.jpg`],
             amount:tour.price*100,
-            currency:'usd',
+            currency:'inr',
             quantity:1,
 
         }]

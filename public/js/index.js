@@ -3,11 +3,13 @@ import {login,logout} from './login';
 import {showMap} from './mapbox';
 import {updateProfile} from './updateProfile';
 import { showAlert } from './alert';
+import {payment} from './stripe';
 
 const loginForm=document.querySelector('.form--login');
 const logoutButton =document.querySelector('.nav__el--logout');
 const updateProfileButton=document.querySelector('.save-setting');
 const updatePassword=document.querySelector('.btn--password-save');
+const bookTour=document.getElementById('book-tour');
 if(loginForm){
     loginForm.addEventListener('submit',e=>{
         e.preventDefault();
@@ -48,5 +50,12 @@ if(updatePassword){
 if(logoutButton){
     logoutButton.addEventListener('click',e=>{
         logout();
+    })
+}
+if(bookTour){
+    bookTour.addEventListener('click',e=>{
+        e.target.textContent='Processing';
+        const {tourId}=e.target.dataset;
+        payment(tourId)
     })
 }
