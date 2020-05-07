@@ -4,7 +4,7 @@ const crypto=require('crypto')
 const User=require('./../models/userModel');
 const catchAsync=require('./../utils/catchAsync');
 const AppError=require('./../utils/appError')
-const sendEmail=require('./../utils/email')
+const Email=require('./../utils/email')
 
 const signInToken=(id)=>{
     return jwt.sign({id},process.env.JWT_SECRECT,{
@@ -71,6 +71,8 @@ exports.logout=(req,res)=>{
 }
 exports.signup=catchAsync(async (req,res)=>{
     const newUser=await User.create(req.body);
+    const url=`${req.protocol}://${req.get('host')}/me  `
+    await new Email(newUser,url).sendWelcome();
     createAndSendToken(newUser,200,res)
 });
 exports.login= catchAsync(async(req,res,next)=>{
