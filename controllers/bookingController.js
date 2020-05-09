@@ -3,7 +3,7 @@ const AppError=require('./../utils/appError')
 const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
-
+const factory=require('./handlerFactory');
 
 
 exports.getSession=catchAsync(async(req,res,next)=>{
@@ -49,5 +49,18 @@ exports.getMyTours=catchAsync(async(req,res,next)=>{
     res.status(200).render('overview',{
         title:'Your Booking',
         tours
+    })
+})
+
+exports.getAllBooking=factory.getAll(Booking);
+exports.createBooking=factory.createOne(Booking);
+exports.updateBooking=factory.updateOne(Booking);
+exports.deleteBooking=factory.deleteOne(Booking);
+exports.getBooking=catchAsync(async(req,res,next)=>{
+    const AllUser=await Booking.find({tour:req.params.id});
+    console.log(AllUser);
+    res.status(200).json({
+        status:'success',
+        user:AllUser
     })
 })

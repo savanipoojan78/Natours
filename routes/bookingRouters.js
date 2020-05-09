@@ -3,9 +3,17 @@ const authController=require('./../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 const router = express.Router();
 
+router.use(authController.protect);
+router.get('/checkout-session/:tourId', bookingController.getSession)
+
+router.use(authController.restrict('admin','lead-guide'))
+router.get('/',bookingController.getAllBooking).post('/',bookingController.createBooking)
 
 router
-    .get('/checkout-session/:tourId',authController.protect, bookingController.getSession)
+    .route('/:id')
+    .get(bookingController.getBooking)
+    .patch(bookingController.updateBooking)
+    .delete(bookingController.deleteBooking)
 
 
-module.exports=router;
+module.exports= router;
