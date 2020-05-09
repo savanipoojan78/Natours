@@ -5,6 +5,7 @@ const Tour = require('../models/tourModel');
 const Booking = require('../models/bookingModel');
 
 
+
 exports.getSession=catchAsync(async(req,res,next)=>{
     const tour=await Tour.findById(req.params.tourId);
     const session=await stripe.checkout.sessions.create({
@@ -37,4 +38,16 @@ exports.createBookingCheckout=catchAsync(async(req,res,next)=>{
     await Booking.create({user,tour,price});
 
     res.redirect(req.originalUrl.split('?')[0]);
+})
+
+exports.getMyTours=catchAsync(async(req,res,next)=>{
+    //1) find all the booking of this user
+    const Bookedtour=await Booking.find({user:req.user.id});
+    const tourIds=Bookedtour.map(el=>el.tour);
+    const tours=await Tour.find({_id:{$in:tourIds}})
+
+    res.status(200).render('overview',{
+        title:'Your Booking',
+        tours
+    })
 })

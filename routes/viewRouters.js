@@ -9,5 +9,6 @@ router.get('/',bookingController.createBookingCheckout,viewController.getOvervie
 router.get('/tour/:slug',authController.protect,viewController.getTour);
 router.get('/login',viewController.login);
 router.get('/me',authController.protect, viewController.me)
+router.get('/my-tours',authController.protect,bookingController.getMyTours)
 
 module.exports=router;
